@@ -22,13 +22,14 @@ import com.github.cliftonlabs.json_simple.Jsoner;
 public class Estrai {
     public static void main(String[] args) throws Exception {
         // Creazione Array per contenere i nome delle centraline
-        ArrayList centraline = new ArrayList();
+        ArrayList<String> centraline = new ArrayList<>();
         
         for (Object st : AirqinoStationData()) {
             JSONObject station = (JSONObject) st;
             String name = station.get("name").toString();
             centraline.add(name);
         }
+
         Collections.sort(centraline);
 
         for (Object c : centraline) {
@@ -61,7 +62,7 @@ public class Estrai {
                     con.disconnect();
 
                     if(content.toString().equals("{    \"values\": []}")){
-                        System.err.println("La centralina " + c + ": non è in funzione");
+                        System.err.println("La centralina " + c + " non è in funzione");
                         System.out.println("-------------------");
                     }else{
                         // Estrai valori (sensor, value) dal Json
@@ -89,7 +90,7 @@ public class Estrai {
                         System.out.println("Data odierna: " + data);
                         System.out.println("Status risposta: " + status);
                         System.out.print("Centralina " + c + ": ");
-                        System.out.print("Ultima tramissione --> " + lastTimestamp + ", ");
+                        System.out.print("Ultima tramissione --> " + lastTimestamp + "; ");
                         System.out.print("Valori sensori --> ");
                         for (Object i : valori) System.out.print(i + "; ");
                         System.out.print("Posizione --> ");
@@ -97,10 +98,9 @@ public class Estrai {
                             JSONObject station = (JSONObject) a;
                             Double lat = station.getDouble("latitude");
                             Double lon = station.getDouble("longitude");                        
-                            System.out.print("latitude: " + lat + " - longitude: " + lon);
+                            System.out.println("latitude: " + lat + " - longitude: " + lon);
                             break;
                         }
-                        System.out.println();
                         trovaDifferenzaData(dataUltimaTrasmissione, dataCorrente);
                         System.out.println("-------------------");
                     }
@@ -165,7 +165,7 @@ public class Estrai {
             // analizzare le stringa di origine JSON
             JSONTokener jtoken = new JSONTokener(response.toString());
             JSONArray stationsArray = new JSONArray(jtoken);
-
+            
             return stationsArray;
         } catch (Exception e) {
             e.printStackTrace();
